@@ -1,0 +1,26 @@
+---
+apiVersion: cr.kanister.io/v1alpha1
+kind: ActionSet
+metadata:
+  generateName: time-logger-s3restore-
+  namespace: kanister
+spec:
+  actions:
+  - name: restore
+    blueprint: time-logger-bp
+    object:
+      kind: Deployment
+      name: time-logger
+      namespace: default
+    configMaps:
+      location:
+        name: time-logger-s3-location
+        namespace: kanister
+    secrets:
+      aws:
+        name: time-logger-aws-creds
+        namespace: kanister
+    artifacts:
+      timeLog:
+        keyValue:
+          restoreDate: 2024-06-08

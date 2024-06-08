@@ -1,0 +1,22 @@
+---
+apiVersion: cr.kanister.io/v1alpha1
+kind: ActionSet
+metadata:
+  generateName: time-logger-s3backup-
+  namespace: kanister
+spec:
+  actions:
+  - name: backup
+    blueprint: time-logger-bp
+    object:
+      kind: Deployment
+      name: time-logger
+      namespace: default
+    configMaps:
+      location:
+        name: time-logger-s3-location
+        namespace: kanister
+    secrets:
+      aws:
+        name: time-logger-aws-creds
+        namespace: kanister

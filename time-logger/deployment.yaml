@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: time-logger
+  name: time-logger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: time-logger
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: time-logger
+    spec:
+      containers:
+      - image: amazon/aws-cli
+        name: aws-cli
+        command:
+        - sh
+        - -c
+        args:
+        - |
+          while true; do
+            for x in $(seq 1200); do
+              date >> /var/log/time.log
+              sleep 1
+            done
+            truncate /var/log/time.log --size 0
+          done
+        resources: {}
+        volumeMounts:
+        - name: var-log
+          mountPath: /var/log
+      - image: busybox
+        name: busybox
+        command:
+        - sh
+        - -c
+        args:
+        - |
+          tail -f /var/log/time.log
+        volumeMounts:
+        - name: var-log
+          mountPath: /var/log
+      volumes:
+      - name: var-log
+        emptyDir: {}
+status: {}
